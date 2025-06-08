@@ -23,14 +23,52 @@ app.get('/', (req, res) => {
 // Ler documento de conhecimento
 let conhecimentoEscolar = '';
 try {
-    conhecimentoEscolar = fs.readFileSync(path.join(__dirname, 'conhecimento.txt'), 'utf8');
+    const caminhoArquivo = path.join(__dirname, 'conhecimento.txt');
+    console.log('Tentando ler arquivo:', caminhoArquivo);
+    
+    conhecimentoEscolar = fs.readFileSync(caminhoArquivo, 'utf8');
     console.log('✅ Documento de conhecimento carregado com sucesso!');
+    console.log('Tamanho do documento:', conhecimentoEscolar.length, 'caracteres');
 } catch (error) {
-    console.log('⚠️ Arquivo conhecimento.txt não encontrado. Usando conhecimento padrão.');
+    console.log('⚠️ Erro ao ler conhecimento.txt:', error.message);
+    console.log('Usando conhecimento padrão resumido.');
     conhecimentoEscolar = `
-INFORMAÇÕES BÁSICAS:
-- Este é um assistente virtual para o curso de formação da ENAP
-- Para informações completas, consulte www.enap.gov.br
+ENAP - CURSO DE FORMAÇÃO INICIAL CPNU 2024
+
+MATRÍCULA:
+- Período: 10 a 18 de março de 2025
+- Local: www.enap.gov.br (online)
+- Não fazer = eliminação automática
+
+CARREIRAS:
+- EPPGG: 580h (abril-julho)
+- ACE: 380h (abril-julho) 
+- ATI: 440h (abril-julho)
+- AIE: 440h (abril-julho)
+- ATPS: 440h (abril-julho)
+
+FORMATO:
+- 100% presencial em Brasília
+- Segunda a sexta, 8h/dia
+- Dedicação exclusiva
+
+APROVAÇÃO:
+- Média final: 70%
+- Por eixo: 60% mínimo
+- Frequência: 75% mínimo
+
+AUXÍLIO:
+- 50% da remuneração inicial
+- Conta corrente obrigatória
+- Desconto apenas IR
+
+DOCUMENTOS:
+- RG/CNH, foto 3x4
+- Dados bancários
+- Servidores: licença
+- Comissionados: exoneração
+
+CONTATO: www.enap.gov.br - (61) 2020-3000
     `;
 }
 
@@ -43,6 +81,7 @@ app.post('/api/chat', async (req, res) => {
         const { message } = req.body;
         
         console.log('Mensagem recebida:', message);
+        console.log('Google API Key existe?', !!process.env.GOOGLE_API_KEY);
         console.log('Google API Key (primeiros 10 chars):', process.env.GOOGLE_API_KEY?.substring(0, 10));
         
         if (!message) {
@@ -110,7 +149,19 @@ NUNCA FAÇA:
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Google API Error Response:', errorText);
-            throw new Error(`Erro na API Google: ${response.status}`);
+            console.error('Request body enviado:', JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `${systemPrompt}\n\nPergunta do usuário: ${message}`
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 1024,
+                    topP: 0.8
+                }
+            }, null, 2));
+            throw new Error(`Erro na API Google: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
