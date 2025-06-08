@@ -30,18 +30,11 @@
         
         .chat-header {
             background: #1c1c1e;
-            padding: 60px 20px 15px 20px;
+            padding: 20px 20px 15px 20px;
             display: flex;
             align-items: center;
             gap: 15px;
             border-bottom: 1px solid #333;
-        }
-        
-        .back-button {
-            font-size: 18px;
-            color: #007AFF;
-            cursor: pointer;
-            padding: 5px;
         }
         
         .header-icon {
@@ -183,6 +176,7 @@
             padding: 20px;
             background: #000;
             border-top: 1px solid #333;
+            margin-bottom: 50px;
         }
         
         .chat-input {
@@ -238,7 +232,7 @@
         }
         
         .quick-suggestions {
-            padding: 0 20px 10px;
+            padding: 10px 20px 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
@@ -292,19 +286,10 @@
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-header">
-            <div class="back-button">←</div>
-            <div class="header-icon">🏫</div>
-            <div class="header-info">
-                <h1>ENAP - Formação Inicial</h1>
-                <p>Assistente Virtual</p>
-            </div>
-        </div>
+        
         
         <div class="quick-suggestions">
             <div class="suggestion" onclick="sendQuickMessage('Como fazer matrícula no curso da ENAP?')">📋 Matrícula</div>
-            <div class="suggestion" onclick="sendQuickMessage('Quais são os prazos importantes?')">⏰ Prazos</div>
-            <div class="suggestion" onclick="sendQuickMessage('Documentos necessários para inscrição')">📄 Documentos</div>
             <div class="suggestion" onclick="sendQuickMessage('Informações sobre remuneração')">💰 Auxílio</div>
             <div class="suggestion" onclick="sendQuickMessage('Como funciona o curso?')">🎓 Curso</div>
             <div class="suggestion" onclick="sendQuickMessage('Critérios de aprovação')">✅ Aprovação</div>
