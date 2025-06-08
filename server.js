@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -8,10 +7,13 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
+// Middleware para servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rota principal para servir o index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Ler documento de conhecimento
 let conhecimentoEscolar = '';
@@ -136,6 +138,11 @@ app.post('/api/atualizar-conhecimento', (req, res) => {
         console.error('Erro ao atualizar conhecimento:', error);
         res.status(500).json({ error: 'Erro ao atualizar conhecimento' });
     }
+});
+
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    console.log(`📱 Acesse: http://localhost:${PORT}`);
 });
 
 app.listen(PORT, () => {
