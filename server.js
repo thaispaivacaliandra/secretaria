@@ -7,6 +7,11 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middlewares
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
 // Middleware para servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -32,12 +37,16 @@ INFORMAÇÕES BÁSICAS:
 // Rota para chat
 app.post('/api/chat', async (req, res) => {
     try {
+        console.log('Body recebido:', req.body);
+        console.log('Headers:', req.headers);
+        
         const { message } = req.body;
         
         console.log('Mensagem recebida:', message);
         console.log('Google API Key (primeiros 10 chars):', process.env.GOOGLE_API_KEY?.substring(0, 10));
         
         if (!message) {
+            console.log('Mensagem vazia ou undefined');
             return res.status(400).json({ error: 'Mensagem é obrigatória' });
         }
 
@@ -138,11 +147,6 @@ app.post('/api/atualizar-conhecimento', (req, res) => {
         console.error('Erro ao atualizar conhecimento:', error);
         res.status(500).json({ error: 'Erro ao atualizar conhecimento' });
     }
-});
-
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando na porta ${PORT}`);
-    console.log(`📱 Acesse: http://localhost:${PORT}`);
 });
 
 app.listen(PORT, () => {
